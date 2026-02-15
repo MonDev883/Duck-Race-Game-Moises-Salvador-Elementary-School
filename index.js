@@ -31,47 +31,24 @@ function renderStudents(){
 function editStudent(i,newName){ students[i]=newName; }
 function removeStudent(i){ students.splice(i,1); renderStudents(); }
 
-// Start race
-function startRace() {
 
-  const ducks = document.querySelectorAll(".duck");
-  const finishLine = document.querySelector(".finish-line");
-  const finishLinePosition = finishLine.offsetLeft;
-
-  const interval = setInterval(() => {
-
-    ducks.forEach(duck => {
-
-      let currentLeft = parseInt(duck.style.left) || 0;
-      let moveStep = Math.floor(Math.random() * 15) + 5; // random speed
-      duck.style.left = currentLeft + moveStep + "px";
-
-      if (currentLeft + moveStep >= finishLinePosition - 50) {
-        clearInterval(interval);
-        showWinner(duck.dataset.name);
-      }
-
-    });
-
-  }, 200);
-}
-
-// Race
 function runRace(){
     const raceTrack = document.getElementById("raceTrack");
-    const finishLine = raceTrack.offsetWidth - 50;
+    const finishLine = raceTrack.offsetWidth - 80;
     const duckSound = document.getElementById("duckSound");
 
+    winnerIndex = null; // reset winner
+
     const interval = setInterval(()=>{
-        if(winnerIndex!==null){
-            clearInterval(interval);
-            showWinner();
-            return;
-        }
+
         positions.forEach((pos,i)=>{
+
             if(winnerIndex!==null) return;
-            const step = 1 + Math.random()*2; // slower movement
-            positions[i]+=step;
+
+            // TRUE RANDOM SPEED
+            const step = Math.random() * 5; 
+            positions[i] += step;
+
             const duckContainer = document.getElementById("duckContainer"+i);
             if(duckContainer) duckContainer.style.left = positions[i]+"px";
 
@@ -81,10 +58,15 @@ function runRace(){
                 duckSound.play().catch(e=>console.log("Duck sound blocked",e));
             }
 
-            if(positions[i]>=finishLine && winnerIndex===null){
-                winnerIndex=i;
+            // Check winner
+            if(positions[i] >= finishLine && winnerIndex===null){
+                winnerIndex = i;
+                clearInterval(interval);
+                showWinner();
             }
+
         });
+
     },100);
 }
 
@@ -128,3 +110,4 @@ function launchCelebration(){
     setTimeout(()=>{ celebration.style.display="none"; },5000);
 
 }
+
