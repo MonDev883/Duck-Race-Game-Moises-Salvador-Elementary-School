@@ -1,4 +1,4 @@
-// Students & race
+/*// Students & race
 let students = [];
 let positions = [];
 let winnerIndex = null;
@@ -110,4 +110,5 @@ function launchCelebration(){
     setTimeout(()=>{ celebration.style.display="none"; },5000);
 
 }
+*/
 
