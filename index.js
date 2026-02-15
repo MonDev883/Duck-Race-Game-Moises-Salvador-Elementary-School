@@ -32,48 +32,28 @@ function editStudent(i,newName){ students[i]=newName; }
 function removeStudent(i){ students.splice(i,1); renderStudents(); }
 
 // Start race
-function startRace(){
-    const raceTrack = document.getElementById("raceTrack");
-    raceTrack.innerHTML = `<div class="wave"></div><div class="wave wave2"></div>`; // clear previous race
-    positions = [];
-    winnerIndex = null;
+function startRace() {
 
-    // Add finish line
-    const finishLineDiv = document.createElement("div");
-    finishLineDiv.id = "finishLine";
-    raceTrack.appendChild(finishLineDiv);
+  const ducks = document.querySelectorAll(".duck");
+  const finishLine = document.querySelector(".finish-line");
+  const finishLinePosition = finishLine.offsetLeft;
 
-    const duckEmojis=["🦆","🦆","🦆","🦆","🦆","🦆"];
-    const colors=["red","blue","green","orange","purple","pink"];
+  const interval = setInterval(() => {
 
-    students.forEach((s,i)=>{
-        positions.push(0);
-        // Create container for name + duck
-        const duckContainer = document.createElement("div");
-        duckContainer.classList.add("duck-container");
-        duckContainer.id = "duckContainer"+i;
-        duckContainer.style.top = `${i*60}px`;
-        duckContainer.style.left = "0px";
+    ducks.forEach(duck => {
 
-        // Name label
-        const nameLabel = document.createElement("div");
-        nameLabel.classList.add("nameLabel");
-        nameLabel.textContent = s;
+      let currentLeft = parseInt(duck.style.left) || 0;
+      let moveStep = Math.floor(Math.random() * 15) + 5; // random speed
+      duck.style.left = currentLeft + moveStep + "px";
 
-        // Duck emoji
-        const duck = document.createElement("div");
-        duck.classList.add("duck");
-        duck.id = "duck"+i;
-        duck.textContent = duckEmojis[i % duckEmojis.length];
-        duck.style.color = colors[i % colors.length];
+      if (currentLeft + moveStep >= finishLinePosition - 50) {
+        clearInterval(interval);
+        showWinner(duck.dataset.name);
+      }
 
-        // Assemble container
-        duckContainer.appendChild(nameLabel);
-        duckContainer.appendChild(duck);
-        raceTrack.appendChild(duckContainer);
     });
 
-    runRace();
+  }, 200);
 }
 
 // Race
@@ -146,4 +126,5 @@ function launchCelebration(){
         container.appendChild(confetti);
     }
     setTimeout(()=>{ celebration.style.display="none"; },5000);
+
 }
