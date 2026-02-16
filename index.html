@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text y=%2224%22 font-size=%2232%22>🦆</text></svg>">
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Duck Race Game</title>
-<link rel="stylesheet" type="text/css" href="styles.css">
+<title>Dock Race Game 🦆</title>
+
 </head>
 <body>
 
+<h1>Dock Race Game 🏁 Moises Elementary School🏫👩‍🏫👧🏻👦🏻</h1>
 
-<h1>Hi Grace bukas ko po ipagpatuloy take care</h1>
-<!--<!-- Student Entry -->
 <input type="text" id="studentName" placeholder="Enter student name">
 <button onclick="addStudent()">Add Student</button>
 
 <div id="studentsList"></div>
 
 <button onclick="startRace()">🏁 Start Race</button>
+
+<div id="timer" style="font-size:20px; margin-top:10px; font-weight:bold;">⏱️ Time: 0s</div>
 
 <div class="race-track" id="raceTrack">
     <div class="wave"></div>
@@ -38,15 +37,14 @@
     <div class="confetti-container"></div>
 </div>
 
-
-<!-- Duck quack sound -->
 <audio id="victorySound" preload="auto">
     <source src="victory.mp3" type="audio/mpeg">
 </audio>
+<audio id="duckSound" preload="auto">
+    <source src="duck.mp3" type="audio/mpeg">
+</audio>
 
-<script src="index.js"></script> -->
+<script src="index.js"></script>
+
 </body>
 </html>
-
-
-
