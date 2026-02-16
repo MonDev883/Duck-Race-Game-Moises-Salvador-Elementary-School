@@ -1,4 +1,4 @@
-/*body {
+body {
     font-family: Arial, sans-serif;
     text-align: center;
     background: linear-gradient(to bottom, #87CEEB, #ffffff);
@@ -18,7 +18,7 @@ button { background: #4CAF50; color: white; }
 .race-track {
     position: relative;
     width: 100%;
-    height: 250px;
+    min-height: 250px;
     border-radius: 10px;
     overflow: hidden;
     border: 2px solid #333;
@@ -97,6 +97,38 @@ button { background: #4CAF50; color: white; }
 }
 @keyframes fall { to{transform:translateY(100vh) rotate(360deg);} }
 
+/* 🌊 Water lane per student */
+.water-lane {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    border-top: 2px solid rgba(255,255,255,0.6);
+    border-bottom: 2px solid rgba(0,0,0,0.2);
+    opacity: 0.85;
+    overflow: hidden;
+}
+
+/* Light moving water shine */
+.water-lane::after {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.4),
+        transparent
+    );
+    animation: waterMove 5s linear infinite;
+}
+
+@keyframes waterMove {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
 /* Finish line */
 #finishLine {
     position: absolute;
@@ -111,12 +143,4 @@ button { background: #4CAF50; color: white; }
         white 10px
     );
     box-shadow: 0 0 5px #000;
-
-}*/
-body{
-    backgound-color: blue;
 }
-h1{
-    color:#ffffff:
-}
-
