@@ -5,7 +5,7 @@ let timerInterval;
 let timeElapsed = 0;
 
 const questions = [
-    { q: "What is 1 + 1?", a: "2" },
+     { q: "What is 1 + 1?", a: "2" },
     { q: "What is 2 + 1?", a: "3" },
     { q: "What is 3 + 1?", a: "4" },
     { q: "What is 2 + 2?", a: "4" },
@@ -14,21 +14,43 @@ const questions = [
     { q: "What is 4 + 1?", a: "5" },
     { q: "What is 1 + 3?", a: "4" },
     { q: "What is 0 + 1?", a: "1" },
+    { q: "What is 5 + 2?", a: "7" },
+    { q: "What is 6 + 1?", a: "7" },
+    { q: "What is 3 + 2?", a: "5" },
 
     { q: "How many eyes do you have?", a: "2" },
     { q: "How many legs does a dog have?", a: "4" },
+    { q: "How many ears do you have?", a: "2" },
+    { q: "How many noses do you have?", a: "1" },
+
     { q: "What color is the sky?", a: "blue" },
     { q: "What color is the sun?", a: "yellow" },
+    { q: "What color is grass?", a: "green" },
+    { q: "What color is a banana?", a: "yellow" },
+    { q: "What color is an apple?", a: "red" },
+
     { q: "What sound does a duck make?", a: "quack" },
     { q: "What sound does a cat make?", a: "meow" },
     { q: "What sound does a dog make?", a: "bark" },
+    { q: "What sound does a cow make?", a: "moo" },
+    { q: "What sound does a pig make?", a: "oink" },
+    { q: "What sound does the wind make?", a: "whoosh" },
+
 
     { q: "What comes after 1?", a: "2" },
     { q: "What comes after 2?", a: "3" },
     { q: "What comes after 3?", a: "4" },
+    { q: "What comes after 4?", a: "5" },
+    { q: "What comes after 5?", a: "6" },
 
     { q: "What shape is a ball?", a: "circle" },
+    { q: "What shape has 3 sides?", a: "triangle" },
+    { q: "What shape has 4 equal sides?", a: "square" },
+    { q: "How many letters are in the alphabet in Filipino do we have?", a: "28" },
+
     { q: "How many fingers on one hand?", a: "5" },
+    { q: "How many days are in a week?", a: "7" },
+
 
     { 
       q: "What is the name of your beautiful teacher?", 
