@@ -9,7 +9,7 @@ const questions = [
     { q: "What is 2 + 1?", a: "3" },
     { q: "What is 3 + 1?", a: "4" },
     { q: "What is 2 + 2?", a: "4" },
-    { q: "What is the name of your beautiful teacher?", a: "5" }
+    { q: "What is the name of your beautiful teacher?", a: "grace" }
 ];
 let currentQuestion;
 
@@ -188,3 +188,4 @@ function launchCelebration(){
     }
     setTimeout(()=>{ celebration.style.display="none"; },5000);
 }
+
