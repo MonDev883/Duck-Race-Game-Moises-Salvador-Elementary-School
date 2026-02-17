@@ -9,7 +9,32 @@ const questions = [
     { q: "What is 2 + 1?", a: "3" },
     { q: "What is 3 + 1?", a: "4" },
     { q: "What is 2 + 2?", a: "4" },
-    { q: "What is the name of your beautiful teacher?", a: "grace" }
+
+    { q: "What is 5 + 1?", a: "6" },
+    { q: "What is 4 + 1?", a: "5" },
+    { q: "What is 1 + 3?", a: "4" },
+    { q: "What is 0 + 1?", a: "1" },
+
+    { q: "How many eyes do you have?", a: "2" },
+    { q: "How many legs does a dog have?", a: "4" },
+    { q: "What color is the sky?", a: "blue" },
+    { q: "What color is the sun?", a: "yellow" },
+    { q: "What sound does a duck make?", a: "quack" },
+    { q: "What sound does a cat make?", a: "meow" },
+    { q: "What sound does a dog make?", a: "bark" },
+
+    { q: "What comes after 1?", a: "2" },
+    { q: "What comes after 2?", a: "3" },
+    { q: "What comes after 3?", a: "4" },
+
+    { q: "What shape is a ball?", a: "circle" },
+    { q: "How many fingers on one hand?", a: "5" },
+
+    { 
+      q: "What is the name of your beautiful teacher?", 
+      a: ["grace", "ms grace", "teacher grace"] 
+    }
+
 ];
 let currentQuestion;
 
@@ -166,12 +191,28 @@ function nextQuestion(){
 
 function checkAnswer(){
     const answer = document.getElementById("answerInput").value.trim().toLowerCase();
-    const correctAnswer = currentQuestion.a.toLowerCase();
-    if(answer===correctAnswer){ alert("Correct! 🎉"); }
-    else{ alert("Oops! Correct answer: "+currentQuestion.a); }
+    const correctAnswer = currentQuestion.a;
+
+    let isCorrect = false;
+
+    if (Array.isArray(correctAnswer)) {
+        // If answer is an array (multiple correct answers)
+        isCorrect = correctAnswer.includes(answer);
+    } else {
+        // If answer is just a string
+        isCorrect = answer === correctAnswer.toLowerCase();
+    }
+
+    if(isCorrect){
+        alert("Correct! 🎉");
+    } else {
+        alert("Oops! Try again 😊");
+    }
+
     document.getElementById("questionBox").style.display="none";
     document.getElementById("answerInput").value="";
 }
+
 
 function launchCelebration(){
     const celebration=document.getElementById("celebration");
@@ -188,4 +229,3 @@ function launchCelebration(){
     }
     setTimeout(()=>{ celebration.style.display="none"; },5000);
 }
-
