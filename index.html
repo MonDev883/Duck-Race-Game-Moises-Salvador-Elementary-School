@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dock Race Game Moises Elementary School</title>
-<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/3/33/Yellow_duck_icon.png" type="image/png">
+<title>Duck Race Game — Moises Salvador Elementary School</title>
+<meta name="description" content="A classroom racing game for kindergarten pupils. Add names, race the ducks, and the winner answers a question.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦆</text></svg>">
 <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
@@ -13,8 +14,29 @@
 
 <input type="text" id="studentName" placeholder="Enter student name">
 <button onclick="addStudent()">Add Student</button>
+
 <div id="studentsList"></div>
-<button onclick="startRace()">🏁 Start Race</button>
+
+<div class="race-controls">
+    <button onclick="startRace()">🏁 Start Race</button>
+    <button class="secondary" onclick="resetRace()">🔄 Race Again</button>
+    <button class="danger" onclick="clearAll()">🗑️ Clear All</button>
+</div>
+
+<details id="questionEditor">
+  <summary>📝 Manage questions</summary>
+
+  <div class="question-editor-body">
+    <input type="text" id="newQuestion" placeholder="Question — e.g. What is 2 + 3?">
+    <input type="text" id="newAnswer" placeholder="Answer — e.g. 5">
+    <button onclick="addQuestion()">Add question</button>
+
+    <p id="questionCount"></p>
+    <div id="questionList"></div>
+
+    <button class="secondary" onclick="resetQuestions()">↺ Restore default questions</button>
+  </div>
+</details>
 
 <div id="timer">⏱ 0s</div>
 
@@ -47,5 +69,3 @@
 <script src="index.js"></script>
 </body>
 </html>
-
-
