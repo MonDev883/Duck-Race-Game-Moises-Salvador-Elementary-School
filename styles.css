@@ -1,20 +1,129 @@
+/* ═══════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════ */
+
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background: linear-gradient(to bottom, #87CEEB, #ffffff);
     margin: 0;
     padding: 20px;
+
+    /* Animated pastel gradient — kindergarten pupils respond to movement */
+    background: linear-gradient(-45deg, #ff9a9e, #fbc2eb, #a1c4fd, #c2ffd8);
+    background-size: 400% 400%;
+    animation: gradientMove 10s ease infinite;
 }
+
+@keyframes gradientMove {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 h1 { margin-bottom: 10px; }
+
 input, button {
-    padding: 8px; margin: 5px; border-radius: 5px;
-    border: none; cursor: pointer;
+    padding: 8px;
+    margin: 5px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
 }
-button { background: #4CAF50; color: white; }
+
+button {
+    background: #4CAF50;
+    color: white;
+}
+
+button:hover { background: #43A047; }
+
+button.secondary {
+    background: #78909C;
+}
+
+button.secondary:hover { background: #607D8B; }
+
 #studentsList { margin-top: 10px; }
+
 .student-item { margin: 5px 0; }
 
-/* Race track */
+.race-controls { margin-top: 10px; }
+
+
+/* ═══════════════════════════════════════════
+   QUESTION EDITOR
+   ═══════════════════════════════════════════ */
+
+#questionEditor {
+    max-width: 600px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.92);
+    border: 2px solid #4FC3F7;
+    border-radius: 10px;
+    padding: 10px 15px;
+    text-align: left;
+}
+
+#questionEditor summary {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 5px;
+    user-select: none;
+}
+
+.question-editor-body { padding-top: 10px; }
+
+.question-editor-body input {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 8px 0;
+    border: 1px solid #ccc;
+    cursor: text;
+}
+
+#questionCount {
+    font-size: 13px;
+    color: #666;
+    margin: 12px 0 4px;
+}
+
+#questionList {
+    max-height: 220px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+.question-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+.question-row:last-child { border-bottom: none; }
+
+.question-row button {
+    background: none;
+    border: none;
+    padding: 2px;
+    margin: 0;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.question-row button:hover { background: none; }
+
+
+/* ═══════════════════════════════════════════
+   RACE TRACK
+   ═══════════════════════════════════════════ */
+
 .race-track {
     position: relative;
     width: 100%;
@@ -25,6 +134,7 @@ button { background: #4CAF50; color: white; }
     background: #1ca3ec;
     margin-top: 20px;
 }
+
 .wave, .wave2 {
     position: absolute;
     width: 200%;
@@ -34,72 +144,18 @@ button { background: #4CAF50; color: white; }
     background: rgba(255,255,255,0.4);
     animation: waveMove 8s linear infinite;
 }
+
 .wave2 {
     background: rgba(255,255,255,0.6);
     animation-duration: 12s;
     opacity: 0.7;
 }
-@keyframes waveMove { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
 
-/* Ducks */
-.duck-container { position: absolute; display: flex; flex-direction: column; align-items: center; }
-.duck {
-    font-size: 40px;
-    transform: rotateY(180deg);
-    transition: all 0.3s ease;
-    text-shadow: 0 0 0px transparent;
+@keyframes waveMove {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
-/* Name label with background */
-.nameLabel {
-    font-weight: bold;
-    text-align: center;
-    color: #ffffff;
-    font-size: 16px;
-    padding: 2px 6px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-}
-
-/* Winner message */
-.winner { font-size: 20px; color: green; margin-top: 15px; }
-
-/* Question box */
-.question-box {
-    margin-top: 20px;
-    padding: 15px;
-    background: #fff8dc;
-    border-radius: 8px;
-    display: none;
-}
-
-/* Celebration */
-.celebration {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 999;
-}
-.rainbow {
-    width: 300px; height: 150px;
-    border-radius: 150px 150px 0 0;
-    background: linear-gradient(to bottom, red,orange,yellow,green,blue,indigo,violet);
-    animation: popRainbow 1s ease-out;
-}
-@keyframes popRainbow { from{transform:scale(0);} to{transform:scale(1);} }
-.confetti {
-    position: absolute;
-    width: 8px;
-    height: 14px;
-    top: -10px;
-    animation: fall 3s linear infinite;
-}
-@keyframes fall { to{transform:translateY(100vh) rotate(360deg);} }
-
-/* Water lanes */
 .water-lane {
     position: absolute;
     left: 0;
@@ -111,6 +167,7 @@ button { background: #4CAF50; color: white; }
     overflow: hidden;
     transition: background-color 0.3s ease;
 }
+
 .water-lane::after {
     content: "";
     position: absolute;
@@ -119,30 +176,169 @@ button { background: #4CAF50; color: white; }
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
     animation: waterMove 5s linear infinite;
 }
-@keyframes waterMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* Finish line */
+@keyframes waterMove {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
 #finishLine {
     position: absolute;
     right: 0;
     top: 0;
-    width: 10px; height: 100%;
+    width: 10px;
+    height: 100%;
     background: repeating-linear-gradient(45deg, black, black 5px, white 5px, white 10px);
     box-shadow: 0 0 5px #000;
 }
 
-/* Timer */
-#timer { font-size: 18px; color: #222; margin-top: 10px; }
-body {
-  background: linear-gradient(-45deg, #ff9a9e, #fbc2eb, #a1c4fd, #c2ffd8);
-  background-size: 400% 400%;
-  animation: gradientMove 10s ease infinite;
+
+/* ═══════════════════════════════════════════
+   DUCKS
+   ═══════════════════════════════════════════ */
+
+.duck-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.duck {
+    /* Scales with viewport width, floor 40px, ceiling 90px */
+    font-size: clamp(40px, 4.5vw, 90px);
+    transform: rotateY(180deg);
+    transition: all 0.3s ease;
+    text-shadow: 0 0 0px transparent;
+}
+
+.nameLabel {
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    font-size: clamp(16px, 1.6vw, 32px);
+    white-space: nowrap;
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 
+/* ═══════════════════════════════════════════
+   RESULT
+   ═══════════════════════════════════════════ */
+
+#timer {
+    font-size: 18px;
+    color: #222;
+    margin-top: 10px;
+}
+
+.winner {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1B5E20;
+    margin-top: 15px;
+}
+
+.question-box {
+    max-width: 500px;
+    margin: 20px auto 0;
+    padding: 15px;
+    background: #fff8dc;
+    border-radius: 8px;
+    display: none;
+}
+
+
+/* ═══════════════════════════════════════════
+   CELEBRATION
+   ═══════════════════════════════════════════ */
+
+.celebration {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 999;
+    pointer-events: none;   /* clicks pass through to the page beneath */
+}
+
+.rainbow {
+    width: 300px;
+    height: 150px;
+    border-radius: 150px 150px 0 0;
+    background: linear-gradient(to bottom, red, orange, yellow, green, blue, indigo, violet);
+    animation: popRainbow 1s ease-out;
+}
+
+@keyframes popRainbow {
+    from { transform: scale(0); }
+    to   { transform: scale(1); }
+}
+
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 14px;
+    top: -10px;
+    animation: fall 3s linear infinite;
+}
+
+@keyframes fall {
+    to { transform: translateY(100vh) rotate(360deg); }
+}
+
+
+/* ═══════════════════════════════════════════
+   REDUCED MOTION
+   Some children are sensitive to movement
+   ═══════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+    body { animation: none; }
+    .wave, .wave2, .water-lane::after { animation: none; }
+    .confetti { animation-duration: 6s; }
+}
+/* ═══════════════════════════════════════════
+   CLASSROOM DISPLAY
+   Two viewing distances: the teacher at the keyboard,
+   and children watching from across the room. Controls
+   stay small; anything the class reads scales up.
+   ═══════════════════════════════════════════ */
+
+h1 { font-size: clamp(24px, 3vw, 52px); }
+
+#timer  { font-size: clamp(18px, 1.8vw, 34px); }
+
+.winner { font-size: clamp(22px, 2.8vw, 48px); }
+
+.question-box {
+    max-width: min(900px, 90vw);
+}
+
+#questionText {
+    font-size: clamp(20px, 2.4vw, 42px);
+    line-height: 1.3;
+}
+
+#answerInput {
+    font-size: clamp(16px, 1.6vw, 28px);
+    padding: clamp(8px, 1vw, 16px);
+    text-align: center;
+}
+
+.question-box button {
+    font-size: clamp(15px, 1.4vw, 24px);
+    padding: clamp(8px, 1vw, 16px) clamp(16px, 2vw, 32px);
+}
+
+.race-track { min-height: clamp(250px, 30vh, 500px); }
+button.danger {
+    background: #E53935;
+}
+button.danger:hover { background: #C62828; }    
