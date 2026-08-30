@@ -190,6 +190,18 @@ blocked sound never stops the race.
 
 ---
 
+### Offline use in a classroom
+
+The game needs no internet once the files are on the machine. On the repo page,
+click **Code → Download ZIP**, copy it to the school computer, extract, and open
+`index.html`.
+
+The GitHub Pages link won't work offline — that's a website. The downloaded copy
+is the one to use.
+
+Teacher-added questions are stored in the browser, so they stay on whichever
+computer they were added to. They don't travel with a copy of the folder.
+
 ## Known limitations
 
 Being honest about what I'd add next:
