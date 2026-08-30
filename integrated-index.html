@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dock Race Game Moises Elementary School</title>
+<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/3/33/Yellow_duck_icon.png" type="image/png">
+<style>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(to bottom, #87CEEB, #ffffff);
+    margin: 0;
+    padding: 20px;
+}
+h1 { margin-bottom: 10px; }
+input, button {
+    padding: 8px; margin: 5px; border-radius: 5px;
+    border: none; cursor: pointer;
+}
+button { background: #4CAF50; color: white; }
+#studentsList { margin-top: 10px; }
+.student-item { margin: 5px 0; }
+
+/* Race track */
+.race-track {
+    position: relative;
+    width: 100%;
+    min-height: 250px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #333;
+    background: #1ca3ec;
+    margin-top: 20px;
+}
+.wave, .wave2 {
+    position: absolute;
+    width: 200%;
+    height: 100px;
+    bottom: 0;
+    border-radius: 40%;
+    background: rgba(255,255,255,0.4);
+    animation: waveMove 8s linear infinite;
+}
+.wave2 {
+    background: rgba(255,255,255,0.6);
+    animation-duration: 12s;
+    opacity: 0.7;
+}
+@keyframes waveMove { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+
+/* Ducks */
+.duck-container { position: absolute; display: flex; flex-direction: column; align-items: center; }
+.duck {
+    font-size: 40px;
+    transform: rotateY(180deg);
+    transition: all 0.3s ease;
+    text-shadow: 0 0 0px transparent;
+}
+
+/* Name label with background */
+.nameLabel {
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Winner message */
+.winner { font-size: 20px; color: green; margin-top: 15px; }
+
+/* Question box */
+.question-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff8dc;
+    border-radius: 8px;
+    display: none;
+}
+
+/* Celebration */
+.celebration {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 999;
+}
+.rainbow {
+    width: 300px; height: 150px;
+    border-radius: 150px 150px 0 0;
+    background: linear-gradient(to bottom, red,orange,yellow,green,blue,indigo,violet);
+    animation: popRainbow 1s ease-out;
+}
+@keyframes popRainbow { from{transform:scale(0);} to{transform:scale(1);} }
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 14px;
+    top: -10px;
+    animation: fall 3s linear infinite;
+}
+@keyframes fall { to{transform:translateY(100vh) rotate(360deg);} }
+
+/* Water lanes */
+.water-lane {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    border-top: 2px solid rgba(255,255,255,0.6);
+    border-bottom: 2px solid rgba(0,0,0,0.2);
+    opacity: 0.85;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+.water-lane::after {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: waterMove 5s linear infinite;
+}
+@keyframes waterMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* Finish line */
+#finishLine {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 10px; height: 100%;
+    background: repeating-linear-gradient(45deg, black, black 5px, white 5px, white 10px);
+    box-shadow: 0 0 5px #000;
+}
+
+/* Timer */
+#timer { font-size: 18px; color: #222; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h1>Dock Race Game 🏁 Moises Elementary School</h1>
+
+<input type="text" id="studentName" placeholder="Enter student name">
+<button onclick="addStudent()">Add Student</button>
+<div id="studentsList"></div>
+<button onclick="startRace()">🏁 Start Race</button>
+
+<div id="timer">⏱ 0s</div>
+
+<div class="race-track" id="raceTrack">
+    <div class="wave"></div>
+    <div class="wave wave2"></div>
+</div>
+
+<div class="winner" id="winnerText"></div>
+
+<div class="question-box" id="questionBox">
+    <h3 id="questionText"></h3>
+    <input type="text" id="answerInput" placeholder="Your Answer">
+    <button onclick="checkAnswer()">Submit</button>
+</div>
+
+<div class="celebration" id="celebration">
+    <div class="rainbow"></div>
+    <div class="confetti-container"></div>
+</div>
+
+<audio id="victorySound" preload="auto">
+    <source src="victory.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="duckSound" preload="auto">
+    <source src="duck.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let students = [];
+let positions = [];
+let winnerIndex = null;
+let timerInterval;
+let timeElapsed = 0;
+
+const questions = [
+    { q: "What is 1 + 1?", a: "2" },
+    { q: "What is 2 + 1?", a: "3" },
+    { q: "What is 3 + 1?", a: "4" },
+    { q: "What is 2 + 2?", a: "4" },
+    { q: "What is the name of your beautiful teacher?", a: "5" }
+];
+let currentQuestion;
+
+function addStudent() {
+    const name = document.getElementById("studentName").value.trim();
+    if (!name) return;
+    students.push(name);
+    document.getElementById("studentName").value = "";
+    renderStudents();
+}
+
+function renderStudents() {
+    const list = document.getElementById("studentsList");
+    list.innerHTML = "";
+    students.forEach((s,i)=>{
+        list.innerHTML += `<div class="student-item">
+            <input type="text" value="${s}" onchange="editStudent(${i}, this.value)">
+            <button onclick="removeStudent(${i})">❌</button>
+        </div>`;
+    });
+}
+
+function editStudent(i,newName){ students[i]=newName; }
+function removeStudent(i){ students.splice(i,1); renderStudents(); }
+
+function startRace(){
+    if(students.length===0){ alert("Add at least one student"); return; }
+
+    const raceTrack = document.getElementById("raceTrack");
+    const rowHeight = 70;
+    raceTrack.style.height = (students.length*rowHeight + 20) + "px";
+    raceTrack.innerHTML = `<div class="wave"></div><div class="wave wave2"></div>`;
+    positions = [];
+    winnerIndex = null;
+    timeElapsed = 0;
+    clearInterval(timerInterval);
+
+    // Finish line
+    const finishLineDiv = document.createElement("div");
+    finishLineDiv.id = "finishLine";
+    raceTrack.appendChild(finishLineDiv);
+
+    const duckEmojis = ["🦆","🦆","🦆","🦆","🦆","🦆"];
+    const colors = ["red","blue","green","orange","purple","pink"];
+    const waterColors = ["#4FC3F7","#29B6F6","#03A9F4","#00BCD4","#26C6DA","#4DD0E1","#81D4FA","#0288D1"];
+    const nameBgColors = ["#FFB6C1","#FFD700","#ADFF2F","#FFA500","#40E0D0","#DA70D6","#FF6347","#7FFFD4"];
+
+    students.forEach((s,i)=>{
+        positions.push(0);
+
+        const waterLane = document.createElement("div");
+        waterLane.classList.add("water-lane");
+        waterLane.style.top = (i*rowHeight)+"px";
+        waterLane.style.background = waterColors[i % waterColors.length];
+        raceTrack.appendChild(waterLane);
+
+        const duckContainer = document.createElement("div");
+        duckContainer.classList.add("duck-container");
+        duckContainer.id = "duckContainer"+i;
+        duckContainer.style.top = (i*rowHeight)+"px";
+        duckContainer.style.left = "0px";
+
+        const nameLabel = document.createElement("div");
+        nameLabel.classList.add("nameLabel");
+        nameLabel.id = "nameLabel"+i;
+        nameLabel.textContent = s;
+        nameLabel.style.background = nameBgColors[i % nameBgColors.length];
+
+        const duck = document.createElement("div");
+        duck.classList.add("duck");
+        duck.id = "duck"+i;
+        duck.textContent = duckEmojis[i % duckEmojis.length];
+        duck.style.color = colors[i % colors.length];
+
+        duckContainer.appendChild(nameLabel);
+        duckContainer.appendChild(duck);
+        raceTrack.appendChild(duckContainer);
+    });
+
+    const timerEl = document.getElementById("timer");
+    timerInterval = setInterval(()=>{
+        timeElapsed++;
+        timerEl.textContent = `⏱ ${timeElapsed}s`;
+    },1000);
+
+    runRace();
+}
+
+// Race function with quack + glow + scale + unique name backgrounds
+function runRace(){
+    const raceTrack = document.getElementById("raceTrack");
+    const finishLine = raceTrack.offsetWidth - 50;
+    const duckSound = document.getElementById("duckSound");
+    const colors = ["red","blue","green","orange","purple","pink"];
+
+    const interval = setInterval(()=>{
+        if(winnerIndex !== null){
+            clearInterval(interval);
+            clearInterval(timerInterval);
+            showWinner();
+            return;
+        }
+
+        students.forEach((s,i)=>{
+            if(winnerIndex!==null) return;
+            const step = 2 + Math.random()*4;
+            positions[i] += step;
+
+            const duckContainer = document.getElementById("duckContainer"+i);
+            const duck = document.getElementById("duck"+i);
+            const nameLabel = document.getElementById("nameLabel"+i);
+
+            if(duckContainer && duck && nameLabel){
+                duckContainer.style.left = positions[i]+"px";
+
+                if(Math.random() < 0.03){
+                    duckSound.currentTime=0;
+                    duckSound.play().catch(e=>console.log(e));
+
+                    const originalBg = nameLabel.style.background;
+                    const glowColor = colors[i % colors.length];
+                    const flashBg = "#"+Math.floor(Math.random()*16777215).toString(16);
+
+                    duck.style.transform="scale(1.4) rotateY(180deg)";
+                    duck.style.textShadow=`0 0 15px ${glowColor}, 0 0 25px ${glowColor}`;
+                    nameLabel.style.background=flashBg;
+
+                    setTimeout(()=>{
+                        duck.style.transform="scale(1) rotateY(180deg)";
+                        duck.style.textShadow="0 0 0px transparent";
+                        nameLabel.style.background=originalBg;
+                    },300);
+                }
+
+                if(positions[i]>=finishLine) winnerIndex=i;
+            }
+        });
+    },100);
+}
+
+function showWinner(){
+    document.getElementById("winnerText").innerHTML = "🏆 "+students[winnerIndex]+" reached the dock first!";
+    const sound = document.getElementById("victorySound");
+    if(sound){ sound.currentTime=0; sound.play().catch(e=>console.log(e)); }
+    document.getElementById("questionBox").style.display="block";
+    nextQuestion();
+    launchCelebration();
+}
+
+function nextQuestion(){
+    currentQuestion = questions[Math.floor(Math.random()*questions.length)];
+    document.getElementById("questionText").textContent = students[winnerIndex]+", "+currentQuestion.q;
+}
+
+function checkAnswer(){
+    const answer = document.getElementById("answerInput").value.trim().toLowerCase();
+    const correctAnswer = currentQuestion.a.toLowerCase();
+    if(answer===correctAnswer){ alert("Correct! 🎉"); }
+    else{ alert("Oops! Correct answer: "+currentQuestion.a); }
+    document.getElementById("questionBox").style.display="none";
+    document.getElementById("answerInput").value="";
+}
+
+function launchCelebration(){
+    const celebration=document.getElementById("celebration");
+    const container=document.querySelector(".confetti-container");
+    celebration.style.display="flex";
+    container.innerHTML="";
+    for(let i=0;i<60;i++){
+        const confetti=document.createElement("div");
+        confetti.classList.add("confetti");
+        confetti.style.left=Math.random()*100+"vw";
+        confetti.style.backgroundColor=["red","yellow","blue","green","orange","pink","purple"][Math.floor(Math.random()*7)];
+        confetti.style.animationDuration=2+Math.random()*3+"s";
+        container.appendChild(confetti);
+    }
+    setTimeout(()=>{ celebration.style.display="none"; },5000);
+}
+</script>
+</body>
+</html>
