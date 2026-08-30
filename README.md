@@ -5,7 +5,7 @@ School**. Children's names are entered, their ducks race across the water, and
 the winner answers a question in front of the class.
 
 No install, no accounts, no internet needed after the first load — it runs from
-a single HTML file on whatever computer the classroom has.
+a single folder on whatever computer the classroom has.
 
 **Play:** https://mondev883.github.io/Duck-Race-Game-Moises-Salvador-Elementary-School/
 
@@ -27,13 +27,25 @@ a single HTML file on whatever computer the classroom has.
 
 1. The teacher types each child's name and adds them to the list
 2. Everyone gets a duck, a coloured lane and a name label
-3. **Start Race** — ducks move up the screen, quacking and flashing as they go
+3. **Start Race** — ducks move across the water, quacking and flashing as they go
 4. The first duck to reach the dock wins
 5. The winner is asked a question — counting, colours, shapes, or animal sounds
 6. Confetti, a rainbow and a victory sound
 
-Names can be edited or removed before the race starts, so a mistyped name
-doesn't mean starting over.
+### The three buttons
+
+| Button | Clears the track | Clears the names |
+|---|---|---|
+| **Start Race** | resets, then races | keeps |
+| **Race Again** | yes | keeps |
+| **Clear All** | yes | yes (with confirmation) |
+
+**Race Again** is for racing the same class repeatedly — twenty names typed one
+at a time shouldn't be lost between rounds. **Clear All** is for starting with a
+different group, and asks first.
+
+Names can be edited or removed before the race starts, so a typo doesn't mean
+starting over.
 
 ---
 
@@ -44,7 +56,7 @@ This is the decision the whole game rests on.
 Each duck advances by a random amount every tick:
 
 ```js
-const step = 2 + Math.random() * 4;
+positions[i] += 2 + Math.random() * 4;
 ```
 
 The race isn't a test. It doesn't reward the fastest reader or the child who
@@ -60,9 +72,41 @@ three children always win teaches the rest that they're not good at it.
 
 ---
 
-## The questions
+## Built for a classroom screen
 
-Around forty, grouped by what they practise:
+The teacher sits at the keyboard. The children watch from across the room. Those
+are two very different viewing distances, and the layout accounts for both.
+
+Anything the class reads scales with the screen:
+
+```css
+.nameLabel { font-size: clamp(16px, 1.6vw, 32px); }
+.duck      { font-size: clamp(40px, 4.5vw, 90px); }
+```
+
+`clamp()` takes a minimum, a preferred value and a maximum. `1.6vw` is 1.6% of
+the viewport width, so text grows on a projector and stays legible on a laptop —
+without three separate media queries.
+
+Lane height scales too, from the JavaScript, because the race loop needs the same
+number the CSS uses:
+
+```js
+const rowHeight = window.innerWidth >= 1600 ? 130
+                : window.innerWidth >= 1200 ? 100
+                : 70;
+```
+
+Keeping that value in one place means the lanes and the ducks can't drift out of
+alignment.
+
+Controls stay small. Only what the class reads gets bigger.
+
+---
+
+## Questions the teacher can edit
+
+Around forty questions ship with the game, grouped by what they practise:
 
 | Group | Examples |
 |---|---|
@@ -75,7 +119,13 @@ Around forty, grouped by what they practise:
 | Shapes | What shape has 3 sides? |
 | Local | How many letters are in the Filipino alphabet? |
 
-One question accepts several answers, because there's more than one way a
+**Manage questions** lets a teacher add their own without touching the code.
+Added questions are stored in `localStorage`, so they survive a reload and the
+next day's lesson. **Restore defaults** brings back the original set.
+
+### Accepting more than one answer
+
+A question can accept several answers, because there's more than one way a
 five-year-old might say it:
 
 ```js
@@ -85,17 +135,20 @@ five-year-old might say it:
 }
 ```
 
-`checkAnswer` handles both shapes — a single string or an array of accepted
-answers:
+`checkAnswer` handles both shapes — a single string or an array:
 
 ```js
-isCorrect = Array.isArray(correctAnswer)
-  ? correctAnswer.includes(answer)
-  : answer === correctAnswer.toLowerCase();
+const isCorrect = Array.isArray(correctAnswer)
+    ? correctAnswer.includes(answer)
+    : answer === correctAnswer.toLowerCase();
 ```
 
 Answers are lowercased and trimmed before comparison, so capitalisation and
 stray spaces don't count against a child still learning to type.
+
+**A wrong answer keeps the question open.** The box stays, the field clears, and
+the cursor returns — so "try again" is actually true rather than a message
+followed by the box closing.
 
 ---
 
@@ -109,12 +162,16 @@ that's one folder of files will still work in five years without an
 
 **Techniques used:**
 
-- `setInterval` driving the race loop at 100ms
+- `setInterval` driving the race loop at 100ms, with the interval ID held at
+  module scope so a race in progress can actually be stopped
 - DOM elements created and positioned per racer, so the number of lanes matches
   the number of children
+- `createElement` rather than `innerHTML` for names — a child called `Ma"am` or
+  `O'Brien` is stored as text, not parsed as markup
 - CSS transitions for the duck's scale and glow on each quack
-- Confetti generated as 60 divs with randomised colour, position and fall speed
-- HTML5 `<audio>` for the quack and victory sounds
+- `localStorage` for teacher-added questions
+- `prefers-reduced-motion` respected, since some children are sensitive to
+  constant movement
 
 ---
 
@@ -126,27 +183,22 @@ Download or clone, then open `index.html`. That's the whole setup.
 git clone https://github.com/MonDev883/Duck-Race-Game-Moises-Salvador-Elementary-School.git
 ```
 
-**Two notes on sound:** browsers block audio until the user interacts with the
-page, so the first quack only plays after the teacher clicks Start. And
-`.play()` returns a promise that rejects if the browser refuses — those
-rejections are caught so a blocked sound never stops the race.
+**A note on sound:** browsers block audio until the user interacts with the page,
+so the first quack only plays after the teacher clicks Start. `.play()` returns a
+promise that rejects if the browser refuses — those rejections are caught, so a
+blocked sound never stops the race.
 
 ---
 
 ## Known limitations
 
-Being honest about what I'd fix next:
+Being honest about what I'd add next:
 
-- **A wrong answer closes the question box.** It says "try again" but doesn't
-  actually let them. The box should stay open until the answer is right, or
-  until the teacher moves on.
-- **No restart button.** Running a second race means reloading the page, which
-  clears the name list too.
-- **Names go into the DOM with `innerHTML`.** A name containing a quote
-  character would break the input. `textContent` and `createElement` would be
-  the correct approach.
-- **Questions are hardcoded.** A teacher can't add their own without editing
-  the JavaScript.
+- **No score history.** Each race is independent, so the teacher can't see
+  whether the same child keeps winning across a session.
+- **One question per race.** The winner answers once. A "next question" button
+  would let the teacher keep going with the same child.
+- **No sound toggle.** A classroom that needs quiet has to mute the machine.
 
 ---
 
